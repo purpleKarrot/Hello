@@ -1,0 +1,6 @@
+---
+BasedOnStyle: Mozilla
+AlignOperands: false
+AlwaysBreakAfterReturnType: None
+AlwaysBreakAfterDefinitionReturnType: None
+...
