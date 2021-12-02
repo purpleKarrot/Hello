@@ -18,3 +18,9 @@ add_executable(hello
 target_link_libraries(hello
   PRIVATE libhello
   )
+
+enable_testing()
+
+add_test(NAME hello
+  COMMAND hello
+  )
