@@ -42,6 +42,7 @@ jobs:
 
           ctest_start("Experimental")
           ctest_configure()
-          ctest_build()
+          ctest_build(CONFIGURATION Debug)
+          ctest_build(CONFIGURATION Release)
           ctest_test()
           ctest_submit()
