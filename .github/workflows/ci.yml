@@ -41,8 +41,18 @@ jobs:
           set(CTEST_SUBMIT_URL "https://webhook.site/75d946f8-0b78-4591-a43b-ba3b0d079f4a")
 
           ctest_start("Experimental")
+          ctest_submit(PARTS "Start")
+
           ctest_configure()
+          ctest_submit(PARTS "Configure")
+
           ctest_build(CONFIGURATION Debug)
+          ctest_submit(PARTS "Build")
+
           ctest_build(CONFIGURATION Release)
+          ctest_submit(PARTS "Build")
+
           ctest_test()
-          ctest_submit()
+          ctest_submit(PARTS "Test")
+
+          ctest_submit(PARTS "Done")
