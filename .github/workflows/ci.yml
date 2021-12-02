@@ -21,6 +21,9 @@ jobs:
         - name: Windows MSVC
           os: windows-2022
           cmake-generator: Visual Studio 17 2022
+        - name: macOS
+          os: macos-11
+          cmake-generator: Xcode
     env:
       CC: ${{ matrix.config.cc }}
       CXX: ${{ matrix.config.cxx }}
@@ -31,6 +34,7 @@ jobs:
         run: |
           cmake_minimum_required(VERSION 3.7)
 
+          site_name(CTEST_SITE)
           set(CTEST_SOURCE_DIRECTORY "$ENV{GITHUB_WORKSPACE}")
           set(CTEST_BINARY_DIRECTORY "$ENV{GITHUB_WORKSPACE}/build")
           set(CTEST_CMAKE_GENERATOR "${{ matrix.config.cmake-generator }}")
