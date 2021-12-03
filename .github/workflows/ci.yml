@@ -49,9 +49,14 @@ jobs:
           set(CTEST_COVERAGE_COMMAND "${{ matrix.config.coverage-command }}")
           set(CTEST_MEMORYCHECK_TYPE "${{ matrix.config.memorycheck-type }}")
           set(CTEST_SUBMIT_URL "https://webhook.site/75d946f8-0b78-4591-a43b-ba3b0d079f4a")
+          set(CTEST_UPDATE_VERSION_ONLY ON)
+          find_program(CTEST_GIT_COMMAND git)
 
           ctest_start("Experimental")
           ctest_submit(PARTS "Start")
+
+          ctest_update()
+          ctest_submit(PARTS "Update")
 
           ctest_configure()
           ctest_submit(PARTS "Configure")
