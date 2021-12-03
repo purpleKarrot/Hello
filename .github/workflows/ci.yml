@@ -52,6 +52,8 @@ jobs:
           set(CTEST_UPDATE_VERSION_ONLY ON)
           find_program(CTEST_GIT_COMMAND git)
 
+          cmake_host_system_information(RESULT NPROC QUERY NUMBER_OF_LOGICAL_CORES)
+
           ctest_start("Experimental")
           ctest_submit(PARTS "Start")
 
@@ -61,14 +63,14 @@ jobs:
           ctest_configure()
           ctest_submit(PARTS "Configure")
 
-          ctest_build()
+          ctest_build(PARALLEL_LEVEL ${NPROC})
           ctest_submit(PARTS "Build")
 
           if(CTEST_MEMORYCHECK_TYPE)
-            ctest_memcheck()
+            ctest_memcheck(PARALLEL_LEVEL ${NPROC})
             ctest_submit(PARTS "MemCheck")
           else()
-            ctest_test()
+            ctest_test(PARALLEL_LEVEL ${NPROC})
             ctest_submit(PARTS "Test")
           endif()
 
