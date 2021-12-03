@@ -12,7 +12,10 @@ jobs:
           os: ubuntu-20.04
           cc: gcc-10
           cxx: g++-10
+          cflags: --coverage
+          cxxflags: --coverage
           cmake-generator: Unix Makefiles
+          coverage-command: gcov-10
         - name: Ubuntu Clang
           os: ubuntu-20.04
           cc: clang-12
@@ -43,6 +46,7 @@ jobs:
           set(CTEST_SOURCE_DIRECTORY "$ENV{GITHUB_WORKSPACE}")
           set(CTEST_BINARY_DIRECTORY "$ENV{GITHUB_WORKSPACE}/build")
           set(CTEST_CMAKE_GENERATOR "${{ matrix.config.cmake-generator }}")
+          set(CTEST_COVERAGE_COMMAND "${{ matrix.config.coverage-command }}")
           set(CTEST_MEMORYCHECK_TYPE "${{ matrix.config.memorycheck-type }}")
           set(CTEST_SUBMIT_URL "https://webhook.site/75d946f8-0b78-4591-a43b-ba3b0d079f4a")
 
@@ -61,6 +65,11 @@ jobs:
           else()
             ctest_test()
             ctest_submit(PARTS "Test")
+          endif()
+
+          if(CTEST_COVERAGE_COMMAND)
+            ctest_coverage()
+            ctest_submit(PARTS "Coverage")
           endif()
 
           ctest_submit(PARTS "Done")
