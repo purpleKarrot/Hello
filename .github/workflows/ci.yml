@@ -17,7 +17,10 @@ jobs:
           os: ubuntu-20.04
           cc: clang-12
           cxx: clang++-12
+          cflags: -fno-omit-frame-pointer -fsanitize=address
+          cxxflags: -fno-omit-frame-pointer -fsanitize=address
           cmake-generator: Unix Makefiles
+          memorycheck-type: AddressSanitizer
         - name: Windows MSVC
           os: windows-2022
           cmake-generator: Visual Studio 17 2022
@@ -27,10 +30,12 @@ jobs:
     env:
       CC: ${{ matrix.config.cc }}
       CXX: ${{ matrix.config.cxx }}
+      CFLAGS: ${{ matrix.config.cflags }}
+      CXXFLAGS: ${{ matrix.config.cxxflags }}
     steps:
       - uses: actions/checkout@v2
       - name: CTest Script
-        shell: ctest --extra-verbose --script {0}
+        shell: ctest --build-config Debug --extra-verbose --script {0}
         run: |
           cmake_minimum_required(VERSION 3.7)
 
@@ -38,6 +43,7 @@ jobs:
           set(CTEST_SOURCE_DIRECTORY "$ENV{GITHUB_WORKSPACE}")
           set(CTEST_BINARY_DIRECTORY "$ENV{GITHUB_WORKSPACE}/build")
           set(CTEST_CMAKE_GENERATOR "${{ matrix.config.cmake-generator }}")
+          set(CTEST_MEMORYCHECK_TYPE "${{ matrix.config.memorycheck-type }}")
           set(CTEST_SUBMIT_URL "https://webhook.site/75d946f8-0b78-4591-a43b-ba3b0d079f4a")
 
           ctest_start("Experimental")
@@ -46,13 +52,15 @@ jobs:
           ctest_configure()
           ctest_submit(PARTS "Configure")
 
-          ctest_build(CONFIGURATION Debug)
+          ctest_build()
           ctest_submit(PARTS "Build")
 
-          ctest_build(CONFIGURATION Release)
-          ctest_submit(PARTS "Build")
-
-          ctest_test()
-          ctest_submit(PARTS "Test")
+          if(CTEST_MEMORYCHECK_TYPE)
+            ctest_memcheck()
+            ctest_submit(PARTS "MemCheck")
+          else()
+            ctest_test()
+            ctest_submit(PARTS "Test")
+          endif()
 
           ctest_submit(PARTS "Done")
